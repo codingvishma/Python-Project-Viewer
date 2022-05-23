@@ -1,0 +1,50 @@
+body {
+  background-color: white;
+}
+
+  h1 {
+  text-align: center;
+}
+
+p {
+  color: black;
+}
+
+h3{
+  background-color: black;
+  color: white;
+  padding: 8px;
+}
+
+.astyle {
+  background-color: #467599;
+  margin-left: 64px;
+}
+
+a {
+  float: left;
+  color: white;
+}
+
+#tabs {
+  background-color: #b2f7ef;
+}
+
+li {
+  color: black;
+}
+
+.codes {
+  background: #ffffff;
+  overflow:auto;
+  width:auto;
+  border:solid gray;
+  border-width:.1em .1em .1em .8em;
+  padding:.2em .6em;
+  font-size: 16px;
+}
+
+pre {
+  margin: 0;
+  line-height: 125%;
+}
