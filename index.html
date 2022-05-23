@@ -1,0 +1,1834 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python Project Viewer</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#tabs" ).tabs();
+  } );
+    $( function() {
+    $( "#module1" ).module1();
+   } );
+    $( function() {
+    $( "#module2" ).module2();
+   } );
+    $( function() {
+    $( "#module3" ).module3();
+   } );
+    $( function() {
+    $( "#module4" ).module4();
+   } );
+    $( function() {
+    $( "#module5" ).module5();
+   } );
+  </script>
+</head>
+<body>
+ <h1>Scientific Computing with Python Project Viewer</h1>
+<div id="tabs">
+  <ul>
+    <li><a class="astyle" href="#tabs-1">ARITHMETIC FORMATTER</a></li>
+    <li><a class="astyle" href="#tabs-2">TIME CALCULATOR</a></li>
+    <li><a class="astyle" href="#tabs-3">BUDGET APP</a></li>
+    <li><a class="astyle" href="#tabs-4">POLYGON AREA CALCULATOR</a></li>
+    <li><a class="astyle" href="#tabs-5">PROBABILITY CALCULATOR</a></li>
+  </ul>
+  <div class="tab" id="tabs-1">
+    <h3>Outline of Test Cases</h3>
+    <p>Create a function that receives a list of strings that are arithmetic problems and returns the problems arranged vertically and side-by-side. <br>The function should optionally take a second argument. <br>When the second argument is set to True, the answers should be displayed.
+</p>
+    <h3>Code</h3>
+    <a href="https://replit.com/@codingvishma/FCC-Arithmetic-Formatter">See my replit code to run against the test modules</a><br>
+<!--start code tab section -->
+<div id="tabs">
+  <ul>
+    <li><a href="#module1-1">main.py</a></li>
+    <li><a href="#module1-2">arithmetic_arranger.py</a></li>
+    <li><a href="#module1-3">test_module.py</a></li>
+  </ul>
+  <div class="tab" id="module1-1">    
+    <h4>main.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></td><td><pre><span style="color: #0000ff">from</span> pytest <span style="color: #0000ff">import</span> main
+
+<span style="color: #0000ff">from</span> arithmetic_arranger <span style="color: #0000ff">import</span> arithmetic_arranger
+
+<span style="color: #0000ff">print</span>(arithmetic_arranger([<span style="color: #a31515">&quot;32 + 698&quot;</span>, <span style="color: #a31515">&quot;3801 - 2&quot;</span>, <span style="color: #a31515">&quot;45 + 43&quot;</span>, <span style="color: #a31515">&quot;123 + 49&quot;</span>]))
+
+<span style="color: #008000"># Run unit tests automatically</span>
+main()
+</pre></td></tr></table></div>
+    
+    
+    
+    
+  </div> <!-- end of module1-1 -->
+    <div class="tab" id="module1-2">
+      <h4>arithmetic_arranger.py</h4>
+    <!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</pre></td><td><pre><span style="color: #0000ff">import</span> re  <span style="color: #008000">#Importing regular expression for search task</span>
+
+<span style="color: #0000ff">def</span> arithmetic_arranger(problems,solve=False):
+
+  <span style="color: #008000">#Error if more than 5 problems</span>
+  <span style="color: #0000ff">if</span> len(problems)&gt;5:
+    <span style="color: #0000ff">return</span> <span style="color: #a31515">&quot;Error: Too many problems.&quot;</span>
+
+  <span style="color: #008000">#Defining variables for each line</span>
+  top_line=<span style="color: #a31515">&quot;&quot;</span>
+  bottom_line=<span style="color: #a31515">&quot;&quot;</span>
+  dash_line=<span style="color: #a31515">&quot;&quot;</span>
+  solution_line=<span style="color: #a31515">&quot;&quot;</span>
+  arranged_line=<span style="color: #a31515">&quot;&quot;</span> <span style="color: #008000">#Result string variable</span>
+
+  <span style="color: #008000">#find the sums that need to be calculated and put them in a list</span>
+  <span style="color: #0000ff">for</span> problem <span style="color: #0000ff">in</span> problems:
+    num_list=problem.split()
+    num1=num_list[0]
+    operator=num_list[1]
+    num2=num_list[2]
+
+    <span style="color: #008000">#Error defining for validation</span>
+    <span style="color: #0000ff">if</span> operator==<span style="color: #a31515">&quot;*&quot;</span> <span style="color: #0000ff">or</span> operator==<span style="color: #a31515">&quot;/&quot;</span>:
+      <span style="color: #0000ff">return</span> <span style="color: #a31515">&quot;Error: Operator must be &#39;+&#39; or &#39;-&#39;.&quot;</span>
+
+    <span style="color: #0000ff">if</span> re.search(<span style="color: #a31515">&quot;[^\d]&quot;</span>,num1) <span style="color: #0000ff">or</span> re.search(<span style="color: #a31515">&quot;[^\d\+\-]&quot;</span>,num2):
+      <span style="color: #0000ff">return</span> <span style="color: #a31515">&quot;Error: Numbers must only contain digits.&quot;</span>
+
+    <span style="color: #0000ff">if</span> len(num1)&gt;4 <span style="color: #0000ff">or</span> len(num2)&gt;4:
+      <span style="color: #0000ff">return</span> <span style="color: #a31515">&quot;Error: Numbers cannot be more than four digits.&quot;</span>
+
+    <span style="color: #008000">#Define the answers</span>
+    answer=<span style="color: #a31515">&quot;&quot;</span>
+    <span style="color: #0000ff">if</span> operator==<span style="color: #a31515">&quot;+&quot;</span>:
+      answer=str(int(num1)+ int(num2))
+    <span style="color: #0000ff">elif</span> operator == <span style="color: #a31515">&quot;-&quot;</span>:
+      answer=str(int(num1) - int(num2))
+      
+    <span style="color: #008000">#Find the max length of the line needed</span>
+    line_length=max(len(num1),len(num2))+2
+
+     <span style="color: #008000">#Find the value of the num1 line</span>
+    num1_line=<span style="color: #a31515">&quot;&quot;</span>
+    num1_line = str(num1.rjust(line_length))
+
+    <span style="color: #008000">#Find the value of the num2 line</span>
+    num2_line=<span style="color: #a31515">&quot;&quot;</span>
+    num2_line =str(operator) + str(num2.rjust(line_length - 1))
+
+    <span style="color: #008000">#Find the value of the dash line</span>
+    dashes=<span style="color: #a31515">&quot;&quot;</span>
+    <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> range(line_length):
+      dashes +=<span style="color: #a31515">&quot;-&quot;</span>
+
+    <span style="color: #008000">#Find the value of the answer line</span>
+    answer_line=<span style="color: #a31515">&quot;&quot;</span>
+    answer_line += answer.rjust(line_length)
+
+    <span style="color: #008000">#Formatting the space alignment of each line</span>
+    <span style="color: #0000ff">if</span> problem != problems[-1]:
+      top_line += num1_line + <span style="color: #a31515">&quot;    &quot;</span>
+      bottom_line += num2_line + <span style="color: #a31515">&quot;    &quot;</span>
+      dash_line += dashes + <span style="color: #a31515">&quot;    &quot;</span>
+      solution_line += answer_line + <span style="color: #a31515">&quot;    &quot;</span>
+    <span style="color: #0000ff">else</span>:
+      top_line += num1_line 
+      bottom_line += num2_line 
+      dash_line += dashes 
+      solution_line += answer_line
+
+  <span style="color: #008000">#Alignment of the arithemtic sum</span>
+  <span style="color: #0000ff">if</span> solve==True:
+    arranged_line = top_line + <span style="color: #a31515">&quot;\n&quot;</span> + bottom_line + <span style="color: #a31515">&quot;\n&quot;</span> + dash_line + <span style="color: #a31515">&quot;\n&quot;</span> + solution_line
+  <span style="color: #0000ff">else</span>:
+    arranged_line = top_line + <span style="color: #a31515">&quot;\n&quot;</span> + bottom_line + <span style="color: #a31515">&quot;\n&quot;</span> + dash_line
+  
+  <span style="color: #0000ff">return</span> arranged_line
+</pre></td></tr></table></div>
+
+
+    
+    
+    
+    
+    </div> <!-- end of module1-2 -->
+      <div class="tab" id="module1-3">    
+        <h4>test_module.py</h4>
+    <!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77</pre></td><td><pre><span style="color: #0000ff">import</span> pytest
+
+<span style="color: #0000ff">from</span> arithmetic_arranger <span style="color: #0000ff">import</span> arithmetic_arranger
+
+test_cases = [
+    pytest.param(
+        [[<span style="color: #a31515">&#39;3801 - 2&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>]],
+        <span style="color: #a31515">&#39;  3801      123\n&#39;</span>
+        <span style="color: #a31515">&#39;-    2    +  49\n&#39;</span>
+        <span style="color: #a31515">&#39;------    -----&#39;</span>,
+        <span style="color: #a31515">&#39;Expected different output when calling &quot;arithmetic_arranger()&quot; with [&quot;3801 - 2&quot;, &quot;123 + 49&quot;]&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_two_problems_arrangement1&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;1 + 2&#39;</span>, <span style="color: #a31515">&#39;1 - 9380&#39;</span>]],
+        <span style="color: #a31515">&#39;  1         1\n&#39;</span>
+        <span style="color: #a31515">&#39;+ 2    - 9380\n&#39;</span>
+        <span style="color: #a31515">&#39;---    ------&#39;</span>,
+        <span style="color: #a31515">&#39;Expected different output when calling &quot;arithmetic_arranger()&quot; with [&quot;1 + 2&quot;, &quot;1 - 9380&quot;]&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_two_problems_arrangement2&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;3 + 855&#39;</span>, <span style="color: #a31515">&#39;3801 - 2&#39;</span>, <span style="color: #a31515">&#39;45 + 43&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>]],
+        <span style="color: #a31515">&#39;    3      3801      45      123\n&#39;</span>
+        <span style="color: #a31515">&#39;+ 855    -    2    + 43    +  49\n&#39;</span>
+        <span style="color: #a31515">&#39;-----    ------    ----    -----&#39;</span>,
+        <span style="color: #a31515">&#39;Expected different output when calling &quot;arithmetic_arranger()&quot; with [&quot;3 + 855&quot;, &quot;3801 - 2&quot;, &quot;45 + 43&quot;, &quot;123 + 49&quot;]&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_four_problems_arrangement&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;11 + 4&#39;</span>, <span style="color: #a31515">&#39;3801 - 2999&#39;</span>, <span style="color: #a31515">&#39;1 + 2&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>, <span style="color: #a31515">&#39;1 - 9380&#39;</span>]],
+        <span style="color: #a31515">&#39;  11      3801      1      123         1\n&#39;</span>
+        <span style="color: #a31515">&#39;+  4    - 2999    + 2    +  49    - 9380\n&#39;</span>
+        <span style="color: #a31515">&#39;----    ------    ---    -----    ------&#39;</span>,
+        <span style="color: #a31515">&#39;Expected different output when calling &quot;arithmetic_arranger()&quot; with [&quot;11 + 4&quot;, &quot;3801 - 2999&quot;, &quot;1 + 2&quot;, &quot;123 + 49&quot;, &quot;1 - 9380&quot;]&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_five_problems_arrangement&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;44 + 815&#39;</span>, <span style="color: #a31515">&#39;909 - 2&#39;</span>, <span style="color: #a31515">&#39;45 + 43&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>,
+          <span style="color: #a31515">&#39;888 + 40&#39;</span>, <span style="color: #a31515">&#39;653 + 87&#39;</span>]],
+        <span style="color: #a31515">&#39;Error: Too many problems.&#39;</span>,
+        <span style="color: #a31515">&#39;Expected calling &quot;arithmetic_arranger()&quot; with more than five problems to return &quot;Error: Too many problems.&quot;&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_too_many_problems&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;3 / 855&#39;</span>, <span style="color: #a31515">&#39;3801 - 2&#39;</span>, <span style="color: #a31515">&#39;45 + 43&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>]],
+        <span style="color: #a31515">&quot;Error: Operator must be &#39;+&#39; or &#39;-&#39;.&quot;</span>,
+        <span style="color: #a31515">&#39;&#39;&#39;Expected calling &quot;arithmetic_arranger()&quot; with a problem that uses the &quot;/&quot; operator to return &quot;Error: Operator must be &#39;+&#39; or &#39;-&#39;.&quot;&#39;&#39;&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_incorrect_operator&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;24 + 85215&#39;</span>, <span style="color: #a31515">&#39;3801 - 2&#39;</span>, <span style="color: #a31515">&#39;45 + 43&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>]],
+        <span style="color: #a31515">&#39;Error: Numbers cannot be more than four digits.&#39;</span>,
+        <span style="color: #a31515">&#39;Expected calling &quot;arithmetic_arranger()&quot; with a problem that has a number over 4 digits long to return &quot;Error: Numbers cannot be more than four digits.&quot;&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_too_many_digits&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;98 + 3g5&#39;</span>, <span style="color: #a31515">&#39;3801 - 2&#39;</span>, <span style="color: #a31515">&#39;45 + 43&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>]],
+        <span style="color: #a31515">&#39;Error: Numbers must only contain digits.&#39;</span>,
+        <span style="color: #a31515">&#39;Expected calling &quot;arithmetic_arranger()&quot; with a problem that contains a letter character in the number to return &quot;Error: Numbers must only contain digits.&quot;&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_only_digits&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;3 + 855&#39;</span>, <span style="color: #a31515">&#39;988 + 40&#39;</span>], True],
+        <span style="color: #a31515">&#39;    3      988\n&#39;</span>
+        <span style="color: #a31515">&#39;+ 855    +  40\n&#39;</span>
+        <span style="color: #a31515">&#39;-----    -----\n&#39;</span>
+        <span style="color: #a31515">&#39;  858     1028&#39;</span>,
+        <span style="color: #a31515">&#39;Expected solutions to be correctly displayed in output when calling &quot;arithmetic_arranger()&quot; with [&quot;3 + 855&quot;, &quot;988 + 40&quot;] and a second argument of `True`.&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_two_problems_with_solutions&#39;</span>),
+    pytest.param(
+        [[<span style="color: #a31515">&#39;32 - 698&#39;</span>, <span style="color: #a31515">&#39;1 - 3801&#39;</span>, <span style="color: #a31515">&#39;45 + 43&#39;</span>, <span style="color: #a31515">&#39;123 + 49&#39;</span>, <span style="color: #a31515">&#39;988 + 40&#39;</span>], True],
+        <span style="color: #a31515">&#39;   32         1      45      123      988\n&#39;</span>
+        <span style="color: #a31515">&#39;- 698    - 3801    + 43    +  49    +  40\n&#39;</span>
+        <span style="color: #a31515">&#39;-----    ------    ----    -----    -----\n&#39;</span>
+        <span style="color: #a31515">&#39; -666     -3800      88      172     1028&#39;</span>,
+        <span style="color: #a31515">&#39;Expected solutions to be correctly displayed in output when calling &quot;arithmetic_arranger()&quot; with five arithmetic problems and a second argument of `True`.&#39;</span>,
+        id=<span style="color: #a31515">&#39;test_five_problems_with_solutions&#39;</span>),
+]
+
+
+@pytest.mark.parametrize(<span style="color: #a31515">&#39;arguments,expected_output,fail_message&#39;</span>, test_cases)
+<span style="color: #0000ff">def</span> test_template(arguments, expected_output, fail_message):
+    actual = arithmetic_arranger(*arguments)
+    <span style="color: #0000ff">assert</span> actual == expected_output, fail_message
+</pre></td></tr></table></div>
+
+    
+    
+    
+      </div> <!-- end of module1-3 -->
+</div> <!-- end of module1 -->
+    
+  </div> <!-- end of tab 1 -->
+     
+        <div id="tabs-2">
+    <h3>Outline of Test Cases</h3>
+    <p>Write a function named add_time that takes in two required parameters and one optional parameter:
+      <li>a start time in the 12-hour clock format (ending in AM or PM)</li>
+      <li>a duration time that indicates the number of hours and minutes</li>
+      <li>(optional) a starting day of the week, case insensitive</li><br>
+<p>The function should add the duration time to the start time and return the result.<br><br>
+
+If the result will be the next day, it should show (next day) after the time. If the result will be more than one day later, it should show (n days later) after the time, where "n" is the number of days later.<br><br>
+
+If the function is given the optional starting day of the week parameter, then the output should display the day of the week of the result. The day of the week in the output should appear after the time and before the number of days later.
+</p>
+    <h3>Code</h3>
+<p><a href="https://replit.com/@codingvishma/FCC-Time-Calculator">See my replit code to run against the test modules</a></p><br>
+<!--start code tab section -->
+<div id="tabs">
+  <ul>
+    <li><a href="#module2-1">main.py</a></li>
+    <li><a href="#module2-2">time_calculator.py</a></li>
+    <li><a href="#module2-3">test_module.py</a></li>
+  </ul>
+  <div class="tab" id="module2-1">    
+    <h4>main.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7</pre></td><td><pre><span style="color: #0000ff">from</span> time_calculator <span style="color: #0000ff">import</span> add_time
+<span style="color: #0000ff">from</span> unittest <span style="color: #0000ff">import</span> main
+
+<span style="color: #0000ff">print</span>(add_time(<span style="color: #a31515">&quot;11:06 PM&quot;</span>, <span style="color: #a31515">&quot;2:02&quot;</span>))
+
+<span style="color: #008000"># Run unit tests automatically</span>
+main(module=<span style="color: #a31515">&#39;test_module&#39;</span>, exit=False)
+</pre></td></tr></table></div>
+
+    
+    
+    
+    
+  </div> <!-- end of module2-1 -->
+    <div class="tab" id="module2-2">    
+      <h4>time_calculator.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54</pre></td><td><pre><span style="color: #0000ff">def</span> add_time(start, duration, day_of_week=None):
+    days = [<span style="color: #a31515">&quot;sunday&quot;</span>, <span style="color: #a31515">&quot;monday&quot;</span>, <span style="color: #a31515">&quot;tuesday&quot;</span>, <span style="color: #a31515">&quot;wednesday&quot;</span>, <span style="color: #a31515">&quot;thursday&quot;</span>, <span style="color: #a31515">&quot;friday&quot;</span>, <span style="color: #a31515">&quot;saturday&quot;</span>]
+
+    <span style="color: #008000"># Convert to 24 hour time and integers</span>
+    start_hour, start_minute = start.split()[0].split(<span style="color: #a31515">&quot;:&quot;</span>)
+    period = start.split()[1]
+    <span style="color: #0000ff">if</span> (period == <span style="color: #a31515">&quot;PM&quot;</span>):
+        start_hour = int(start_hour) + 12
+    <span style="color: #0000ff">else</span>:
+        start_hour = int(start_hour)
+    start_minute = int(start_minute)
+    <span style="color: #008000"># Get the duration of each hour and minute by splitting the duration</span>
+    duration_hour, duration_minute = duration.split(<span style="color: #a31515">&quot;:&quot;</span>)
+    duration_hour = int(duration_hour)
+    duration_minute = int(duration_minute)
+
+    <span style="color: #008000"># Calculate initial ending time</span>
+    end_minute = start_minute + duration_minute
+    end_hour = start_hour + duration_hour
+    end_day = 0
+
+    <span style="color: #008000"># Convert to proper number of days, hours, minutes</span>
+    end_hour = end_hour + (end_minute // 60)
+    end_minute = end_minute % 60
+    end_day = end_day + (end_hour // 24)
+    end_hour = end_hour % 24
+
+    <span style="color: #008000"># Convert hour back to 12 hour time</span>
+    <span style="color: #0000ff">if</span> end_hour &gt; 12:
+        end_hour = end_hour - 12
+        end_period = <span style="color: #a31515">&#39;PM&#39;</span>
+    <span style="color: #0000ff">elif</span> end_hour == 12:
+        end_period = <span style="color: #a31515">&#39;PM&#39;</span>
+    <span style="color: #0000ff">elif</span> end_hour == 0:
+        end_hour = 12
+        end_period = <span style="color: #a31515">&#39;AM&#39;</span>
+    <span style="color: #0000ff">else</span>:
+        end_period = <span style="color: #a31515">&#39;AM&#39;</span>
+
+    <span style="color: #008000"># Format and return the new time</span>
+    new_time = <span style="color: #a31515">&quot;{}:{:02d} {}&quot;</span>.format(end_hour, end_minute, end_period)
+
+    <span style="color: #008000"># If needed, then calculate the ending day of the week</span>
+    <span style="color: #0000ff">if</span> day_of_week:
+        new_time += <span style="color: #a31515">&quot;, &quot;</span> + days[(days.index(day_of_week.lower()) + end_day) % 7].title()
+
+    <span style="color: #008000"># If end_day &gt; 0, then add the number of days</span>
+    <span style="color: #0000ff">if</span> end_day &gt; 0:
+        <span style="color: #0000ff">if</span> end_day == 1:
+            new_time += <span style="color: #a31515">&quot; (next day)&quot;</span> <span style="color: #008000">#if its the next day</span>
+        <span style="color: #0000ff">else</span>:
+            new_time += <span style="color: #a31515">&quot; ({} days later)&quot;</span>.format(end_day) <span style="color: #008000">#if more than one day later</span>
+
+    <span style="color: #0000ff">return</span> new_time
+</pre></td></tr></table></div>
+    
+    
+    
+    
+    </div> <!-- end of module2-2 -->
+      <div class="tab" id="module2-3">    
+        <h4>test_module.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68</pre></td><td><pre><span style="color: #0000ff">import</span> unittest
+<span style="color: #0000ff">from</span> time_calculator <span style="color: #0000ff">import</span> add_time
+
+
+<span style="color: #0000ff">class</span> <span style="color: #2b91af">UnitTests</span>(unittest.TestCase):
+
+    <span style="color: #0000ff">def</span> test_same_period(self):
+        actual = add_time(<span style="color: #a31515">&quot;3:30 PM&quot;</span>, <span style="color: #a31515">&quot;2:12&quot;</span>)
+        expected = <span style="color: #a31515">&quot;5:42 PM&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;3:30 PM&quot;, &quot;2:12&quot; to return &quot;5:42 PM&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_different_period(self):
+        actual = add_time(<span style="color: #a31515">&quot;11:55 AM&quot;</span>, <span style="color: #a31515">&quot;3:12&quot;</span>)
+        expected = <span style="color: #a31515">&quot;3:07 PM&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;11:55 AM&quot;, &quot;3:12&quot; to return &quot;3:07 PM&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_next_day(self):
+        actual = add_time(<span style="color: #a31515">&quot;9:15 PM&quot;</span>, <span style="color: #a31515">&quot;5:30&quot;</span>)
+        expected = <span style="color: #a31515">&quot;2:45 AM (next day)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected time to end with &quot;(next day)&quot; when it is the next day.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_period_change_at_twelve(self):
+        actual = add_time(<span style="color: #a31515">&quot;11:40 AM&quot;</span>, <span style="color: #a31515">&quot;0:25&quot;</span>)
+        expected = <span style="color: #a31515">&quot;12:05 PM&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected period to change from AM to PM at 12:00&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_twenty_four(self):
+        actual = add_time(<span style="color: #a31515">&quot;2:59 AM&quot;</span>, <span style="color: #a31515">&quot;24:00&quot;</span>)
+        expected = <span style="color: #a31515">&quot;2:59 AM (next day)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;2:59 AM&quot;, &quot;24:00&quot; to return &quot;2:59 AM&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_two_days_later(self):
+        actual = add_time(<span style="color: #a31515">&quot;11:59 PM&quot;</span>, <span style="color: #a31515">&quot;24:05&quot;</span>)
+        expected = <span style="color: #a31515">&quot;12:04 AM (2 days later)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;11:59 PM&quot;, &quot;24:05&quot; to return &quot;12:04 AM (2 days later)&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_high_duration(self):
+        actual = add_time(<span style="color: #a31515">&quot;8:16 PM&quot;</span>, <span style="color: #a31515">&quot;466:02&quot;</span>)
+        expected = <span style="color: #a31515">&quot;6:18 AM (20 days later)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;8:16 PM&quot;, &quot;466:02&quot; to return &quot;6:18 AM (20 days later)&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_no_change(self):
+        actual = add_time(<span style="color: #a31515">&quot;5:01 AM&quot;</span>, <span style="color: #a31515">&quot;0:00&quot;</span>)
+        expected = <span style="color: #a31515">&quot;5:01 AM&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected adding 0:00 to return initial time.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_same_period_with_day(self):
+        actual = add_time(<span style="color: #a31515">&quot;3:30 PM&quot;</span>, <span style="color: #a31515">&quot;2:12&quot;</span>, <span style="color: #a31515">&quot;Monday&quot;</span>)
+        expected = <span style="color: #a31515">&quot;5:42 PM, Monday&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;3:30 PM&quot;, &quot;2:12&quot;, &quot;Monday&quot; to return &quot;5:42 PM, Monday&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_twenty_four_with_day(self):
+        actual = add_time(<span style="color: #a31515">&quot;2:59 AM&quot;</span>, <span style="color: #a31515">&quot;24:00&quot;</span>, <span style="color: #a31515">&quot;saturDay&quot;</span>)
+        expected = <span style="color: #a31515">&quot;2:59 AM, Sunday (next day)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;2:59 AM&quot;, &quot;24:00&quot;, &quot;saturDay&quot; to return &quot;2:59 AM, Sunday (next day)&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_two_days_later_with_day(self):
+        actual = add_time(<span style="color: #a31515">&quot;11:59 PM&quot;</span>, <span style="color: #a31515">&quot;24:05&quot;</span>, <span style="color: #a31515">&quot;Wednesday&quot;</span>)
+        expected = <span style="color: #a31515">&quot;12:04 AM, Friday (2 days later)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;11:59 PM&quot;, &quot;24:05&quot;, &quot;Wednesday&quot; to return &quot;12:04 AM, Friday (2 days later)&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_high_duration_with_day(self):
+        actual = add_time(<span style="color: #a31515">&quot;8:16 PM&quot;</span>, <span style="color: #a31515">&quot;466:02&quot;</span>, <span style="color: #a31515">&quot;tuesday&quot;</span>)
+        expected = <span style="color: #a31515">&quot;6:18 AM, Monday (20 days later)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling &quot;add_time()&quot; with &quot;8:16 PM&quot;, &quot;466:02&quot;, &quot;tuesday&quot; to return &quot;6:18 AM, Monday (20 days later)&quot;&#39;</span>)
+
+<span style="color: #0000ff">if</span> __name__ == <span style="color: #a31515">&quot;__main__&quot;</span>:
+    unittest.main()
+</pre></td></tr></table></div>
+    
+    
+    
+    
+      </div> <!-- end of module2-3 -->
+</div> <!-- end of module2 -->             
+  </div> <!-- end of tab 2 -->
+  
+  
+  
+  <div id="tabs-3">
+    <h3>Outline of Test Cases</h3>
+    <p>Complete the Category class in budget.py. It should be able to instantiate objects based on different budget categories like food, clothing, and entertainment. When objects are created, they are passed in the name of the category. The class should have an instance variable called ledger that is a list. The class should also contain the following methods:<br>
+
+<li>A deposit method that accepts an amount and description. If no description is given, it should default to an empty string. The method should append an object to the ledger list in the form of {"amount": amount, "description": description}.</li>
+<li>A withdraw method that is similar to the deposit method, but the amount passed in should be stored in the ledger as a negative number. If there are not enough funds, nothing should be added to the ledger. This method should return True if the withdrawal took place, and False otherwise.</li>
+<li>A get_balance method that returns the current balance of the budget category based on the deposits and withdrawals that have occurred.</li>
+<li>A transfer method that accepts an amount and another budget category as arguments. The method should add a withdrawal with the amount and the description "Transfer to [Destination Budget Category]". The method should then add a deposit to the other budget category with the amount and the description "Transfer from [Source Budget Category]". If there are not enough funds, nothing should be added to either ledgers. This method should return True if the transfer took place, and False otherwise.</li>
+<li>A check_funds method that accepts an amount as an argument. It returns False if the amount is greater than the balance of the budget category and returns True otherwise. This method should be used by both the withdraw method and transfer method.</li><br>
+    <p>When the budget object is printed it should display: </p>
+    <li>A title line of 30 characters where the name of the category is centered in a line of * characters.</li>
+    <li>A list of the items in the ledger. Each line should show the description and amount. The first 23 characters of the description should be displayed, then the amount. The amount should be right aligned, contain two decimal places, and display a maximum of 7 characters.</li>
+    <li>A line displaying the category total.</li>
+<br>
+<p>The output should look like this:<br>
+*************Food*************<br>
+initial deposit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000.00<br>
+groceries&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-10.15<br>
+restaurant and more foo&nbsp;-15.89<br>
+Transfer to Clothing&nbsp;&nbsp;&nbsp;&nbsp;-50.00<br>
+Total: 923.96 <br>
+Besides the Category class, create a function (outside of the class) called create_spend_chart that takes a list of categories as an argument. It should return a string that is a bar chart.<br>
+The chart should show the percentage spent in each category passed in to the function. The percentage spent should be calculated only with withdrawals and not with deposits. Down the left side of the chart should be labels 0 - 100. The "bars" in the bar chart should be made out of the "o" character. The height of each bar should be rounded down to the nearest 10. The horizontal line below the bars should go two spaces past the final bar. Each category name should be written vertically below the bar. There should be a title at the top that says "Percentage spent by category".<br>
+
+This function will be tested with up to four categories.<br>
+
+Look at the example output below very closely and make sure the spacing of the output matches the example exactly.<br><br>
+
+Percentage spent by category<br>
+100| <br>         
+&nbsp;90|          <br>      
+&nbsp;80|          <br>   
+&nbsp;70|          <br>
+&nbsp;60| o        <br>
+&nbsp;50| o        <br>
+&nbsp;40| o        <br>
+&nbsp;30| o        <br>
+&nbsp;20| o&nbsp;&nbsp;o     <br>
+&nbsp;10| o&nbsp;&nbsp;o&nbsp;&nbsp;o  <br>
+&nbsp;&nbsp;0|&nbsp;o&nbsp;&nbsp;o&nbsp;&nbsp;o  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;----------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F&nbsp;&nbsp;C&nbsp;&nbsp;A  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o&nbsp;&nbsp;l&nbsp;&nbsp;u  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o&nbsp;&nbsp;o&nbsp;&nbsp;t  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d&nbsp;&nbsp;t&nbsp;&nbsp;o  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h     <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i     <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n     <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g     <br>
+</p>
+    <h3>Code</h3>
+    <a href="https://replit.com/@codingvishma/FCC-Budget-App">See my replit code to run against the test modules</a><br>
+<!--start code tab section -->
+<div id="tabs">
+  <ul>
+    <li><a href="#module3-1">main.py</a></li>
+    <li><a href="#module3-2">budget.py</a></li>
+    <li><a href="#module3-3">test_module.py</a></li>
+  </ul>
+  <div class="tab" id="module3-1">    
+    <h4>main.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></td><td><pre><span style="color: #0000ff">import</span> budget
+<span style="color: #0000ff">from</span> budget <span style="color: #0000ff">import</span> create_spend_chart
+<span style="color: #0000ff">from</span> unittest <span style="color: #0000ff">import</span> main
+
+food = budget.Category(<span style="color: #a31515">&quot;Food&quot;</span>)
+food.deposit(1000, <span style="color: #a31515">&quot;initial deposit&quot;</span>)
+food.withdraw(10.15, <span style="color: #a31515">&quot;groceries&quot;</span>)
+food.withdraw(15.89, <span style="color: #a31515">&quot;restaurant and more food for dessert&quot;</span>)
+<span style="color: #0000ff">print</span>(food.get_balance())
+clothing = budget.Category(<span style="color: #a31515">&quot;Clothing&quot;</span>)
+food.transfer(50, clothing)
+clothing.withdraw(25.55)
+clothing.withdraw(100)
+auto = budget.Category(<span style="color: #a31515">&quot;Auto&quot;</span>)
+auto.deposit(1000, <span style="color: #a31515">&quot;initial deposit&quot;</span>)
+auto.withdraw(15)
+
+<span style="color: #0000ff">print</span>(food)
+<span style="color: #0000ff">print</span>(clothing)
+
+<span style="color: #0000ff">print</span>(create_spend_chart([food, clothing, auto]))
+
+<span style="color: #008000"># Run unit tests automatically</span>
+main(module=<span style="color: #a31515">&#39;test_module&#39;</span>, exit=False)
+</pre></td></tr></table></div>
+    
+    
+    
+    
+  </div> <!-- end of module3-1 -->
+    <div class="tab" id="module3-2">    
+      <h4>budget.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69</pre></td><td><pre><span style="color: #0000ff">class</span> <span style="color: #2b91af">Category</span>:
+    <span style="color: #0000ff">def</span> __init__(user, u):
+        user.category = u
+        user.ledger = []
+<span style="color: #008000">#function for the deposit of cash</span>
+    <span style="color: #0000ff">def</span> deposit(user, amount, description=<span style="color: #a31515">&#39;&#39;</span>):
+        user.ledger.append({<span style="color: #a31515">&#39;amount&#39;</span>: amount, <span style="color: #a31515">&#39;description&#39;</span>: description})
+      
+<span style="color: #008000">#function for the withdrawal of cash</span>
+    <span style="color: #0000ff">def</span> withdraw(user, amount, description=<span style="color: #a31515">&#39;&#39;</span>):
+        <span style="color: #0000ff">if</span> user.check_funds(amount): <span style="color: #008000">#if there is enough cash then</span>
+            user.ledger.append({<span style="color: #a31515">&#39;amount&#39;</span>: -amount, <span style="color: #a31515">&#39;description&#39;</span>: description}) <span style="color: #008000">#make the withdrawl and remove the amount</span>
+            <span style="color: #0000ff">return</span> True
+        <span style="color: #0000ff">else</span>: <span style="color: #008000">#else return false</span>
+            <span style="color: #0000ff">return</span> False
+
+<span style="color: #008000">#function for the balance total using the ledger amount</span>
+    <span style="color: #0000ff">def</span> get_balance(user):
+        <span style="color: #0000ff">return</span> sum([x.get(<span style="color: #a31515">&#39;amount&#39;</span>) <span style="color: #0000ff">for</span> x <span style="color: #0000ff">in</span> user.ledger]) 
+
+<span style="color: #008000">#function for the transfer of cash </span>
+    <span style="color: #0000ff">def</span> transfer(user, amount, cat):
+        <span style="color: #0000ff">if</span> user.check_funds(amount): <span style="color: #008000">#if the person has enough money</span>
+            user.withdraw(amount, f<span style="color: #a31515">&#39;Transfer to {cat.category}&#39;</span>) <span style="color: #008000">#make the withdrawal and send a message to confirming the transfer</span>
+            cat.deposit(amount, f<span style="color: #a31515">&#39;Transfer from {user.category}&#39;</span>) <span style="color: #008000">#and depoist the money and send a message to the receiver</span>
+            <span style="color: #0000ff">return</span> True
+        <span style="color: #0000ff">else</span>:
+            <span style="color: #0000ff">return</span> False
+
+<span style="color: #008000">#function to check the total balance in persons account</span>
+    <span style="color: #0000ff">def</span> check_funds(user, amount):
+        <span style="color: #0000ff">return</span> user.get_balance() &gt;= amount
+
+<span style="color: #008000">#function to give the bills descriptions and total amount</span>
+    <span style="color: #0000ff">def</span> __str__(user):
+        bill = user.category.center(30, <span style="color: #a31515">&#39;*&#39;</span>) + <span style="color: #a31515">&#39;\n&#39;</span>
+        <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> user.ledger:
+            bill += f<span style="color: #a31515">&#39;{i.get(&quot;description&quot;)[:23]:23}&#39;</span> + f<span style="color: #a31515">&#39;{i.get(&quot;amount&quot;):7.2f}&#39;</span> + <span style="color: #a31515">&#39;\n&#39;</span>
+
+        bill += f<span style="color: #a31515">&#39;Total: {user.get_balance():.2f}&#39;</span>
+        <span style="color: #0000ff">return</span> bill
+
+<span style="color: #008000">#function to show the different items costs and display it into a receipt layout</span>
+<span style="color: #0000ff">def</span> create_spend_chart(categories):
+    receipt = <span style="color: #a31515">&#39;Percentage spent by category\n&#39;</span>
+    withdrawals = [
+      -sum([i.get(<span style="color: #a31515">&#39;amount&#39;</span>)
+      <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> cat.ledger 
+        <span style="color: #0000ff">if</span> i.get(<span style="color: #a31515">&#39;amount&#39;</span>) &lt; 0])
+          <span style="color: #0000ff">for</span> cat <span style="color: #0000ff">in</span> categories]
+    percent_withdrawal = [round(i / sum(withdrawals) * 100) <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> withdrawals]
+    names = [cat.category.lower().capitalize() <span style="color: #0000ff">for</span> cat <span style="color: #0000ff">in</span> categories]
+    
+    <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> range(100, -10, -10):
+        receipt += str(i).rjust(3) + <span style="color: #a31515">&quot;| &quot;</span>
+        
+        <span style="color: #0000ff">for</span> percent <span style="color: #0000ff">in</span> percent_withdrawal:
+            receipt += <span style="color: #a31515">&quot;o  &quot;</span> <span style="color: #0000ff">if</span> percent &gt;= i <span style="color: #0000ff">else</span> <span style="color: #a31515">&quot;   &quot;</span>
+        receipt += <span style="color: #a31515">&quot;\n&quot;</span>
+
+    receipt += <span style="color: #a31515">&#39; &#39;</span> * 4 + <span style="color: #a31515">&#39;-&#39;</span> * (2 * (len(categories) + 1) + 2) 
+    max_len = len(max(names, key=len))
+    names = [i.ljust(max_len) <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> names]
+    <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> range(max_len):
+        receipt += <span style="color: #a31515">&#39;\n     &#39;</span>
+        <span style="color: #0000ff">for</span> name <span style="color: #0000ff">in</span> names:
+            receipt += name[i] + <span style="color: #a31515">&#39;  &#39;</span>
+
+    <span style="color: #0000ff">return</span> receipt
+</pre></td></tr></table></div>
+    
+    
+    
+    
+    </div> <!-- end of module3-2 -->
+      <div class="tab" id="module3-3">    
+        <h4>test_module.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105</pre></td><td><pre><span style="color: #0000ff">import</span> unittest
+<span style="color: #0000ff">import</span> budget
+<span style="color: #0000ff">from</span> budget <span style="color: #0000ff">import</span> create_spend_chart
+
+
+<span style="color: #0000ff">class</span> <span style="color: #2b91af">UnitTests</span>(unittest.TestCase):
+    maxDiff = None
+    <span style="color: #0000ff">def</span> setUp(self):
+        self.food = budget.Category(<span style="color: #a31515">&quot;Food&quot;</span>)
+        self.entertainment = budget.Category(<span style="color: #a31515">&quot;Entertainment&quot;</span>)
+        self.business = budget.Category(<span style="color: #a31515">&quot;Business&quot;</span>)
+
+    <span style="color: #0000ff">def</span> test_deposit(self):
+        self.food.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        actual = self.food.ledger[0]
+        expected = {<span style="color: #a31515">&quot;amount&quot;</span>: 900, <span style="color: #a31515">&quot;description&quot;</span>: <span style="color: #a31515">&quot;deposit&quot;</span>}
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `deposit` method to create a specific object in the ledger instance variable.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_deposit_no_description(self):
+        self.food.deposit(45.56)
+        actual = self.food.ledger[0]
+        expected = {<span style="color: #a31515">&quot;amount&quot;</span>: 45.56, <span style="color: #a31515">&quot;description&quot;</span>: <span style="color: #a31515">&quot;&quot;</span>}
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected calling `deposit` method with no description to create a blank description.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_withdraw(self):
+        self.food.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        self.food.withdraw(45.67, <span style="color: #a31515">&quot;milk, cereal, eggs, bacon, bread&quot;</span>)
+        actual = self.food.ledger[1]
+        expected = {<span style="color: #a31515">&quot;amount&quot;</span>: -45.67, <span style="color: #a31515">&quot;description&quot;</span>: <span style="color: #a31515">&quot;milk, cereal, eggs, bacon, bread&quot;</span>}
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `withdraw` method to create a specific object in the ledger instance variable.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_withdraw_no_description(self):
+        self.food.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        good_withdraw = self.food.withdraw(45.67)
+        actual = self.food.ledger[1]
+        expected = {<span style="color: #a31515">&quot;amount&quot;</span>: -45.67, <span style="color: #a31515">&quot;description&quot;</span>: <span style="color: #a31515">&quot;&quot;</span>}
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `withdraw` method with no description to create a blank description.&#39;</span>)
+        self.assertEqual(good_withdraw, True, <span style="color: #a31515">&#39;Expected `withdraw` method to return `True`.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_get_balance(self):
+        self.food.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        self.food.withdraw(45.67, <span style="color: #a31515">&quot;milk, cereal, eggs, bacon, bread&quot;</span>)
+        actual = self.food.get_balance()
+        expected = 854.33
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected balance to be 854.33&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_transfer(self):
+        self.food.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        self.food.withdraw(45.67, <span style="color: #a31515">&quot;milk, cereal, eggs, bacon, bread&quot;</span>)
+        transfer_amount = 20
+        food_balance_before = self.food.get_balance()
+        entertainment_balance_before = self.entertainment.get_balance()
+        good_transfer = self.food.transfer(transfer_amount, self.entertainment)
+        food_balance_after = self.food.get_balance()
+        entertainment_balance_after = self.entertainment.get_balance()
+        actual = self.food.ledger[2]
+        expected = {<span style="color: #a31515">&quot;amount&quot;</span>: -transfer_amount, <span style="color: #a31515">&quot;description&quot;</span>: <span style="color: #a31515">&quot;Transfer to Entertainment&quot;</span>}
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `transfer` method to create a specific ledger item in food object.&#39;</span>)
+        self.assertEqual(good_transfer, True, <span style="color: #a31515">&#39;Expected `transfer` method to return `True`.&#39;</span>)
+        self.assertEqual(food_balance_before - food_balance_after, transfer_amount, <span style="color: #a31515">&#39;Expected `transfer` method to reduce balance in food object.&#39;</span>)
+        self.assertEqual(entertainment_balance_after - entertainment_balance_before, transfer_amount, <span style="color: #a31515">&#39;Expected `transfer` method to increase balance in entertainment object.&#39;</span>)
+        actual = self.entertainment.ledger[0]
+        expected = {<span style="color: #a31515">&quot;amount&quot;</span>: transfer_amount, <span style="color: #a31515">&quot;description&quot;</span>: <span style="color: #a31515">&quot;Transfer from Food&quot;</span>}
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `transfer` method to create a specific ledger item in entertainment object.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_check_funds(self):
+        self.food.deposit(10, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        actual = self.food.check_funds(20)
+        expected = False
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `check_funds` method to be False&#39;</span>)
+        actual = self.food.check_funds(10)
+        expected = True
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `check_funds` method to be True&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_withdraw_no_funds(self):
+        self.food.deposit(100, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        good_withdraw = self.food.withdraw(100.10)
+        self.assertEqual(good_withdraw, False, <span style="color: #a31515">&#39;Expected `withdraw` method to return `False`.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_transfer_no_funds(self):
+        self.food.deposit(100, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        good_transfer = self.food.transfer(200, self.entertainment)
+        self.assertEqual(good_transfer, False, <span style="color: #a31515">&#39;Expected `transfer` method to return `False`.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_to_string(self):
+        self.food.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        self.food.withdraw(45.67, <span style="color: #a31515">&quot;milk, cereal, eggs, bacon, bread&quot;</span>)
+        self.food.transfer(20, self.entertainment)
+        actual = str(self.food)
+        expected = f<span style="color: #a31515">&quot;*************Food*************\ndeposit                 900.00\nmilk, cereal, eggs, bac -45.67\nTransfer to Entertainme -20.00\nTotal: 834.33&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected different string representation of object.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_create_spend_chart(self):
+        self.food.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        self.entertainment.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        self.business.deposit(900, <span style="color: #a31515">&quot;deposit&quot;</span>)
+        self.food.withdraw(105.55)
+        self.entertainment.withdraw(33.40)
+        self.business.withdraw(10.99)
+        actual = create_spend_chart([self.business, self.food, self.entertainment])
+        expected = <span style="color: #a31515">&quot;Percentage spent by category\n100|          \n 90|          \n 80|          \n 70|    o     \n 60|    o     \n 50|    o     \n 40|    o     \n 30|    o     \n 20|    o  o  \n 10|    o  o  \n  0| o  o  o  \n    ----------\n     B  F  E  \n     u  o  n  \n     s  o  t  \n     i  d  e  \n     n     r  \n     e     t  \n     s     a  \n     s     i  \n           n  \n           m  \n           e  \n           n  \n           t  &quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected different chart representation. Check that all spacing is exact.&#39;</span>)
+
+<span style="color: #0000ff">if</span> __name__ == <span style="color: #a31515">&quot;__main__&quot;</span>:
+    unittest.main()
+</pre></td></tr></table></div>
+    
+    
+    
+    
+      </div> <!-- end of module3-3 -->
+</div> <!-- end of module3 -->      
+  </div> <!-- end of tab 3 -->
+
+  
+  <div id="tabs-4">
+    <h3>Outline of Test Cases</h3>
+    <p>In this project you will use object oriented programming to create a Rectangle class and a Square class. The Square class should be a subclass of Rectangle and inherit methods and attributes.<br><br>
+
+      <u>Rectangle class</u><br>
+When a Rectangle object is created, it should be initialized with width and height attributes. The class should also contain the following methods:<br>
+
+<li>set_width</li>
+<li>set_height</li>
+<li>get_area: Returns area (width * height)</li>
+<li>get_perimeter: Returns perimeter (2 * width + 2 * height)</li>
+<li>get_diagonal: Returns diagonal ((width ** 2 + height ** 2) ** .5)</li>
+<li>get_picture: Returns a string that represents the shape using lines of "*". The number of lines should be equal to the height and the number of "*" in each line should be equal to the width. There should be a new line (\n) at the end of each line. If the width or height is larger than 50, this should return the string: "Too big for picture.".</li>
+<li>get_amount_inside: Takes another shape (square or rectangle) as an argument. Returns the number of times the passed in shape could fit inside the shape (with no rotations). For instance, a rectangle with a width of 4 and a height of 8 could fit in two squares with sides of 4.</li>
+<p>Additionally, if an instance of a Rectangle is represented as a string, it should look like: Rectangle(width=5, height=10)<br><br>
+
+      <u>Square class</u><br>
+The Square class should be a subclass of Rectangle. When a Square object is created, a single side length is passed in. The __init__ method should store the side length in both the width and height attributes from the Rectangle class.<br>
+
+The Square class should be able to access the Rectangle class methods but should also contain a set_side method. If an instance of a Square is represented as a string, it should look like: Square(side=9)<br><br>
+
+Additionally, the set_width and set_height methods on the Square class should set both the width and height.
+</p>
+    <h3>Code</h3>
+    <a href="https://replit.com/@codingvishma/FCC-Polygon-Area-Calculator">See my replit code to run against the test modules</a><br>
+<!--start code tab section -->
+<div id="tabs">
+  <ul>
+    <li><a href="#module4-1">main.py</a></li>
+    <li><a href="#module4-2">shape_calculator.py</a></li>
+    <li><a href="#module4-3">test_module.py</a></li>
+  </ul>
+  <div class="tab" id="module4-1">    
+    <h4>main.py</h4>
+ <!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></td><td><pre><span style="color: #0000ff">import</span> shape_calculator
+<span style="color: #0000ff">from</span> unittest <span style="color: #0000ff">import</span> main
+
+rect = shape_calculator.Rectangle(5, 10)
+<span style="color: #0000ff">print</span>(rect.get_area())
+rect.set_width(3)
+<span style="color: #0000ff">print</span>(rect.get_perimeter())
+<span style="color: #0000ff">print</span>(rect)
+
+sq = shape_calculator.Square(9)
+<span style="color: #0000ff">print</span>(sq.get_area())
+sq.set_side(4)
+<span style="color: #0000ff">print</span>(sq.get_diagonal())
+<span style="color: #0000ff">print</span>(sq)
+
+
+<span style="color: #008000"># Run unit tests automatically</span>
+main(module=<span style="color: #a31515">&#39;test_module&#39;</span>, exit=False)
+</pre></td></tr></table></div>
+   
+    
+    
+    
+  </div> <!-- end of module4-1 -->
+    <div class="tab" id="module4-2">    
+      <h4>shape_calculator.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46</pre></td><td><pre><span style="color: #0000ff">class</span> <span style="color: #2b91af">Rectangle</span>:
+<span style="color: #008000">#get the initial data</span>
+    <span style="color: #0000ff">def</span> __init__(x, w, h):
+        x.width = w
+        x.height = h
+<span style="color: #008000">#function to return the width and height</span>
+    <span style="color: #0000ff">def</span> __str__(x):
+        <span style="color: #0000ff">return</span> f<span style="color: #a31515">&#39;Rectangle(width={x.width}, height={x.height})&#39;</span>
+<span style="color: #008000">#set the width</span>
+    <span style="color: #0000ff">def</span> set_width(x, w):
+        x.width = w
+<span style="color: #008000">#set the height</span>
+    <span style="color: #0000ff">def</span> set_height(x, h):
+        x.height = h
+<span style="color: #008000">#function to return the area (width * height)</span>
+    <span style="color: #0000ff">def</span> get_area(x):
+        <span style="color: #0000ff">return</span> x.width * x.height
+<span style="color: #008000">#function to return the perimeter (2 * width + 2 * height)</span>
+    <span style="color: #0000ff">def</span> get_perimeter(x):
+        <span style="color: #0000ff">return</span> 2 * (x.width + x.height)
+<span style="color: #008000">#function to return the diagonal line ((width ** 2 + height ** 2) ** .5)</span>
+    <span style="color: #0000ff">def</span> get_diagonal(x):
+        <span style="color: #0000ff">return</span> (x.width ** 2 + x.height ** 2) ** 0.5
+<span style="color: #008000">#function to returns a string that represents the shape using lines of &quot;*&quot;</span>
+    <span style="color: #0000ff">def</span> get_picture(x):
+        <span style="color: #0000ff">if</span> x.width &gt; 50 <span style="color: #0000ff">or</span> x.height &gt; 50:
+            <span style="color: #0000ff">return</span> <span style="color: #a31515">&#39;Too big for picture.&#39;</span>
+
+        pic = <span style="color: #a31515">&#39;*&#39;</span> * x.width + <span style="color: #a31515">&#39;\n&#39;</span>
+        pic = pic * x.height
+        <span style="color: #0000ff">return</span> pic
+<span style="color: #008000">#function to returns the number of times the passed in shape could fit inside the shape (with no rotations)</span>
+    <span style="color: #0000ff">def</span> get_amount_inside(x, ob):
+        <span style="color: #0000ff">return</span> x.get_area() // ob.get_area()
+
+
+<span style="color: #0000ff">class</span> <span style="color: #2b91af">Square</span>(Rectangle):
+    <span style="color: #0000ff">def</span> __init__(x, s):
+        super().__init__(s, s)
+<span style="color: #008000">#function to set the number of sides drawn</span>
+    <span style="color: #0000ff">def</span> set_side(x, s):
+        x.width = s
+        x.height = s
+<span style="color: #008000">#function to say what the shape is and the number of sides    </span>
+    <span style="color: #0000ff">def</span> __str__(x):
+        <span style="color: #0000ff">return</span> f<span style="color: #a31515">&#39;Square(side={x.width})&#39;</span>
+</pre></td></tr></table></div>
+    
+    
+    
+    
+    </div> <!-- end of module4-2 -->
+      <div class="tab" id="module4-3">    
+        <h4>test_module.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116</pre></td><td><pre><span style="color: #0000ff">import</span> unittest
+<span style="color: #0000ff">import</span> shape_calculator
+
+
+<span style="color: #0000ff">class</span> <span style="color: #2b91af">UnitTests</span>(unittest.TestCase):
+    maxDiff = None
+    <span style="color: #0000ff">def</span> setUp(self):
+        self.rect = shape_calculator.Rectangle(3, 6)
+        self.sq = shape_calculator.Square(5)
+
+    <span style="color: #0000ff">def</span> test_subclass(self):
+        actual = issubclass(shape_calculator.Square, shape_calculator.Rectangle)
+        expected = True
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected Square class to be a subclass of the Rectangle class.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_distinct_classes(self):
+        actual = shape_calculator.Square <span style="color: #0000ff">is</span> <span style="color: #0000ff">not</span> shape_calculator.Rectangle
+        expected = True
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected Square class to be a distinct class from the Rectangle class.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_square_is_square_and_rectangle(self):
+        actual = isinstance(self.sq, shape_calculator.Square) <span style="color: #0000ff">and</span> isinstance(self.sq, shape_calculator.Rectangle)
+        expected = True
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected square object to be an instance of the Square class and the Rectangle class.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_rectangle_string(self):
+        actual = str(self.rect)
+        expected = <span style="color: #a31515">&quot;Rectangle(width=3, height=6)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected string representation of rectangle to be &quot;Rectangle(width=3, height=6)&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_square_string(self):
+        actual = str(self.sq)
+        expected = <span style="color: #a31515">&quot;Square(side=5)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected string representation of square to be &quot;Square(side=5)&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_area(self):
+        actual = self.rect.get_area()
+        expected = 18
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected area of rectangle to be 18&#39;</span>)
+        actual = self.sq.get_area()
+        expected = 25
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected area of square to be 25&#39;</span>)
+        
+
+    <span style="color: #0000ff">def</span> test_perimeter(self):
+        actual = self.rect.get_perimeter()
+        expected = 18
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected perimeter of rectangle to be 18&#39;</span>)
+        actual = self.sq.get_perimeter()
+        expected = 20
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected perimeter of square to be 20&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_diagonal(self):
+        actual = self.rect.get_diagonal()
+        expected = 6.708203932499369
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected diagonal of rectangle to be 6.708203932499369&#39;</span>)
+        actual = self.sq.get_diagonal()
+        expected = 7.0710678118654755
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected diagonal of square to be 7.0710678118654755&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_set_attributes(self):
+        self.rect.set_width(7)
+        self.rect.set_height(8)
+        self.sq.set_side(2)
+        actual = str(self.rect)
+        expected = <span style="color: #a31515">&quot;Rectangle(width=7, height=8)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected string representation of rectangle after setting new values to be &quot;Rectangle(width=7, height=8)&quot;&#39;</span>)
+        actual = str(self.sq)
+        expected = <span style="color: #a31515">&quot;Square(side=2)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected string representation of square after setting new values to be &quot;Square(side=2)&quot;&#39;</span>)
+        self.sq.set_width(4)
+        actual = str(self.sq)
+        expected = <span style="color: #a31515">&quot;Square(side=4)&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected string representation of square after setting width to be &quot;Square(side=4)&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_rectangle_picture(self):
+        self.rect.set_width(7)
+        self.rect.set_height(3)
+        actual = self.rect.get_picture()
+        expected = <span style="color: #a31515">&quot;*******\n*******\n*******\n&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected rectangle picture to be different.&#39;</span>)     
+
+    <span style="color: #0000ff">def</span> test_square_picture(self):
+        self.sq.set_side(2)
+        actual = self.sq.get_picture()
+        expected = <span style="color: #a31515">&quot;**\n**\n&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected square picture to be different.&#39;</span>)   
+
+    <span style="color: #0000ff">def</span> test_big_picture(self):
+        self.rect.set_width(51)
+        self.rect.set_height(3)
+        actual = self.rect.get_picture()
+        expected = <span style="color: #a31515">&quot;Too big for picture.&quot;</span>
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected message: &quot;Too big for picture.&quot;&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_get_amount_inside(self):
+        self.rect.set_height(10)
+        self.rect.set_width(15)
+        actual = self.rect.get_amount_inside(self.sq)
+        expected = 6
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `get_amount_inside` to return 6.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_get_amount_inside_two_rectangles(self):
+        rect2 = shape_calculator.Rectangle(4, 8)
+        actual = rect2.get_amount_inside(self.rect)
+        expected = 1
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `get_amount_inside` to return 1.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_get_amount_inside_none(self):
+        rect2 = shape_calculator.Rectangle(2, 3)
+        actual = rect2.get_amount_inside(self.rect)
+        expected = 0
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected `get_amount_inside` to return 0.&#39;</span>)
+        
+<span style="color: #0000ff">if</span> __name__ == <span style="color: #a31515">&quot;__main__&quot;</span>:
+    unittest.main()
+</pre></td></tr></table></div>
+    
+    
+    
+    
+      </div> <!-- end of module4-3 -->
+</div> <!-- end of module4 -->          
+  </div> <!-- end of tab 4 -->
+  
+  
+  <div id="tabs-5">
+    <h3>Outline of Test Cases</h3>
+    <p>For this project, you will write a program to determine the approximate probability of drawing certain balls randomly from a hat.<br>
+
+Create a Hat class, which should take a variable number of arguments that specify the number of balls of each color that are in the hat.
+<br>
+A hat will always be created with at least one ball. The arguments passed into the hat object upon creation should be converted to a contents instance variable. contents should be a list of strings containing one item for each ball in the hat. Each item in the list should be a color name representing a single ball of that color. <br>
+The Hat class should have a draw method that accepts an argument indicating the number of balls to draw from the hat. This method should remove balls at random from contents and return those balls as a list of strings. The balls should not go back into the hat during the draw, similar to an urn experiment without replacement. If the number of balls to draw exceeds the available quantity, return all the balls.<br><br>
+Create an experiment function in prob_calculator.py, which should accept the following arguments:
+      <li>hat: A hat object containing balls that should be copied inside the function.</li>
+      <li>expected_balls: An object indicating the exact group of balls to attempt to draw from the hat for the experiment.</li>
+      <li>num_balls_drawn: The number of balls to draw out of the hat in each experiment.</li>
+      <li>num_experiments: The number of experiments to perform. (The more experiments performed, the more accurate the approximate probability will be.)</li><br>
+<p>The experiment function should return a probability.<br><br>
+
+You will need to perform N experiments, count how many times M we get at a certain amount of balls, and estimate the probability as M/N. Each experiment consists of starting with a hat containing the specified balls, drawing a number of balls, and checking if we got the balls we were attempting to draw.
+</p>
+    <h3>Code</h3>
+    <a href="https://replit.com/@codingvishma/FCC-Probability-Calculator">See my replit code to run against the test modules</a><br>
+<!--start code tab section -->
+<div id="tabs">
+  <ul>
+    <li><a href="#module5-1">main.py</a></li>
+    <li><a href="#module5-2">prob_calculator.py</a></li>
+    <li><a href="#module5-3">test_module.py</a></li>
+  </ul>
+  <div class="tab" id="module5-1">    
+    <h4>main.py</h4>
+ <!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></td><td><pre><span style="color: #0000ff">import</span> prob_calculator
+<span style="color: #0000ff">from</span> unittest <span style="color: #0000ff">import</span> main
+
+prob_calculator.random.seed(95)
+hat = prob_calculator.Hat(blue=4, red=2, green=6)
+probability = prob_calculator.experiment(
+    hat=hat,
+    expected_balls={<span style="color: #a31515">&quot;blue&quot;</span>: 2,
+                    <span style="color: #a31515">&quot;red&quot;</span>: 1},
+    num_balls_drawn=4,
+    num_experiments=3000)
+<span style="color: #0000ff">print</span>(<span style="color: #a31515">&quot;Probability:&quot;</span>, probability)
+
+<span style="color: #008000"># Run unit tests automatically</span>
+main(module=<span style="color: #a31515">&#39;test_module&#39;</span>, exit=False)
+</pre></td></tr></table></div>
+   
+    
+    
+    
+  </div> <!-- end of module5-1 -->
+    <div class="tab" id="module5-2">    
+      <h4>prob_calculator.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></td><td><pre><span style="color: #0000ff">import</span> copy
+<span style="color: #0000ff">import</span> random
+
+<span style="color: #0000ff">class</span> <span style="color: #2b91af">Hat</span>:
+  <span style="color: #0000ff">def</span> __init__(x,**all_item):
+    x.contents=[]
+    <span style="color: #0000ff">for</span> key,value <span style="color: #0000ff">in</span> all_item.items():
+        <span style="color: #0000ff">for</span> itr <span style="color: #0000ff">in</span> range(value):
+          x.contents.append(key)
+  
+  <span style="color: #008000"># Function to get random n number of hats from contents</span>
+  <span style="color: #0000ff">def</span> draw(x,amount):
+      draw_list = []
+      <span style="color: #0000ff">if</span> amount &gt;= len(x.contents):
+          <span style="color: #0000ff">return</span> x.contents
+      <span style="color: #0000ff">for</span> i <span style="color: #0000ff">in</span> range(amount):
+          name=x.contents.pop(random.randrange(len(x.contents)))
+          draw_list.append(name)
+      <span style="color: #0000ff">return</span> draw_list
+
+  <span style="color: #008000"># Function to get the probability</span>
+<span style="color: #0000ff">def</span> experiment(hat, expected_balls, num_balls_drawn, num_experiments):
+    final_count=0
+    <span style="color: #0000ff">for</span> _ <span style="color: #0000ff">in</span> range(num_experiments):
+      copyhat = copy.deepcopy(hat)
+      temp_list = copyhat.draw(num_balls_drawn)
+      success=True
+      <span style="color: #0000ff">for</span> key,value <span style="color: #0000ff">in</span> expected_balls.items():
+        <span style="color: #0000ff">if</span> temp_list.count(key) &lt; value:
+          success=False
+          <span style="color: #0000ff">break</span>
+      <span style="color: #0000ff">if</span> success:
+        final_count+=1
+    <span style="color: #0000ff">return</span> final_count/num_experiments <span style="color: #008000">#return the probability</span>
+</pre></td></tr></table></div>
+    
+    
+    
+    
+    </div> <!-- end of module5-2 -->
+      <div class="tab" id="module5-3">    
+        <h4>test_module.py</h4>
+<!-- HTML generated using hilite.me --><div class="codes"><table><tr><td><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36</pre></td><td><pre><span style="color: #0000ff">import</span> unittest
+<span style="color: #0000ff">import</span> prob_calculator
+
+prob_calculator.random.seed(95)
+<span style="color: #0000ff">class</span> <span style="color: #2b91af">UnitTests</span>(unittest.TestCase):
+    maxDiff = None
+    <span style="color: #0000ff">def</span> test_hat_class_contents(self):
+        hat = prob_calculator.Hat(red=3,blue=2)
+        actual = hat.contents
+        expected = [<span style="color: #a31515">&quot;red&quot;</span>,<span style="color: #a31515">&quot;red&quot;</span>,<span style="color: #a31515">&quot;red&quot;</span>,<span style="color: #a31515">&quot;blue&quot;</span>,<span style="color: #a31515">&quot;blue&quot;</span>]
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected creation of hat object to add correct contents.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_hat_draw(self):
+        hat = prob_calculator.Hat(red=5,blue=2)
+        actual = hat.draw(2)
+        expected = [<span style="color: #a31515">&#39;blue&#39;</span>, <span style="color: #a31515">&#39;red&#39;</span>]
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected hat draw to return two random items from hat contents.&#39;</span>)
+        actual = len(hat.contents)
+        expected = 5
+        self.assertEqual(actual, expected, <span style="color: #a31515">&#39;Expected hat draw to reduce number of items in contents.&#39;</span>)
+
+    <span style="color: #0000ff">def</span> test_prob_experiment(self):
+        hat = prob_calculator.Hat(blue=3,red=2,green=6)
+        probability = prob_calculator.experiment(hat=hat, expected_balls={<span style="color: #a31515">&quot;blue&quot;</span>:2,<span style="color: #a31515">&quot;green&quot;</span>:1}, num_balls_drawn=4, num_experiments=1000)
+        actual = probability
+        expected = 0.272
+        self.assertAlmostEqual(actual, expected, delta = 0.01, msg = <span style="color: #a31515">&#39;Expected experiment method to return a different probability.&#39;</span>)
+        hat = prob_calculator.Hat(yellow=5,red=1,green=3,blue=9,test=1)
+        probability = prob_calculator.experiment(hat=hat, expected_balls={<span style="color: #a31515">&quot;yellow&quot;</span>:2,<span style="color: #a31515">&quot;blue&quot;</span>:3,<span style="color: #a31515">&quot;test&quot;</span>:1}, num_balls_drawn=20, num_experiments=100)
+        actual = probability
+        expected = 1.0
+        self.assertAlmostEqual(actual, expected, delta = 0.01, msg = <span style="color: #a31515">&#39;Expected experiment method to return a different probability.&#39;</span>)
+
+
+<span style="color: #0000ff">if</span> __name__ == <span style="color: #a31515">&quot;__main__&quot;</span>:
+    unittest.main()
+</pre></td></tr></table></div>
+    
+    
+    
+    
+      </div> <!-- end of module5-3 -->
+</div> <!-- end of module5 -->     
+    
+  </div> <!-- end of tab 5 -->
+
+  </div> <!-- end of tabs -->
+</body>
+</html>
