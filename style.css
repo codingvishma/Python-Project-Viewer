@@ -1,26 +1,28 @@
 body {
   background-color: white;
 }
-
   h1 {
   text-align: center;
 }
-
 p {
   color: black;
 }
-
 h3{
   background-color: black;
   color: white;
   padding: 8px;
 }
+h4 {
+  background-color: #b2f7ef;
+  padding: 4px;
+  margin-top: 3px;
+}
 
 .astyle {
   background-color: #467599;
   margin-left: 64px;
+  padding-bottom: 57px;
 }
-
 a {
   float: left;
   color: white;
@@ -28,6 +30,9 @@ a {
 
 #tabs {
   background-color: #b2f7ef;
+}
+ul {
+
 }
 
 li {
